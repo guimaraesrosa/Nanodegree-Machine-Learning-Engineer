@@ -1,0 +1,39 @@
+Identificando Outiliers
+
+pd.set_option('display.max_rows', 1000)
+# Para cada atributo, encontrar os pontos extremos de alto e baixo valor
+outliers = []
+for feature in df_trombose.keys():
+    
+    # Calcular Q1 (25th percentil)
+    Q1 = np.percentile(df_trombose[feature], 25)
+
+    # Calcular Q3 (75th percentil)
+    Q3 = np.percentile(df_trombose[feature], 75)
+    
+    # Usar o intervalo de interquartil para calcular outlier
+    iqr = Q3 - Q1
+    step = 1.5*iqr
+    
+    # Mostrar outliers
+    print "Pontos de dados considerados outliers para o atributo: {} \n".format(feature)
+    index_outliers = df_trombose[~((df_trombose[feature] >= Q1 - step) & (df_trombose[feature] <= Q3 + step))]
+    display(index_outliers)
+    #Salvar todos os outliers em data frame
+    outliers.append(index_outliers)
+
+outliers = pd.concat(outliers, axis=0) 
+
+
+#Verificar se há algum linha considerada outliers em mais de um atributo
+#df[df.index.duplicated(keep=False)]
+outliers.index.get_duplicates()
+
+# OPTIONAL: Select the indices for data points you wish to remove
+#outliers  = [65, 66, 75, 128, 154]
+#outliers = []
+
+# Remove the outliers, if any were specified
+#good_data = df_trombose.drop(df_trombose.index[outliers]).reset_index(drop = True)
+pd.set_option('display.max_rows', 1000)
+outliers
